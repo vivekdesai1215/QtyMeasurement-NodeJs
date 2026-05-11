@@ -32,4 +32,6 @@ const units = {
     kelvin: { type: MeasurementTypes.TEMPERATURE }
 };
 
+console.log("MeasurementTypes:", MeasurementTypes);
+
 module.exports = units;

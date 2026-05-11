@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const testDB = require("./config/testConnection");
 const { getMeasurementType } = require("./utils/unitHelper");
-
+const quantityRoutes = require("./routes/quantityRoutes");
 const app = express();
 
 app.use(cors());
@@ -38,6 +38,9 @@ app.get("/test-unit/:unit", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+app.use("/", quantityRoutes);
+
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
 });
+
