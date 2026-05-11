@@ -29,6 +29,39 @@ async function saveHistory(data) {
     ]);
 }
 
+// fetch all history
+async function getAllHistory() {
+    const [rows] = await db.execute(
+        `SELECT * FROM quantity_history ORDER BY created_at DESC`
+    );
+    return rows;
+}
+
+// filter by measurement type
+async function getHistoryByMeasurementType(measurementType) {
+    const [rows] = await db.execute(
+        `SELECT * FROM quantity_history 
+         WHERE measurement_type = ?
+         ORDER BY created_at DESC`,
+        [measurementType]
+    );
+    return rows;
+}
+
+// filter by operation type
+async function getHistoryByOperationType(operationType) {
+    const [rows] = await db.execute(
+        `SELECT * FROM quantity_history 
+         WHERE operation_type = ?
+         ORDER BY created_at DESC`,
+        [operationType]
+    );
+    return rows;
+}
+
 module.exports = {
-    saveHistory
+    saveHistory,
+    getAllHistory,
+    getHistoryByMeasurementType,
+    getHistoryByOperationType
 };

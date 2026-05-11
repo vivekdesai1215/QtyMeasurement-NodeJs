@@ -7,6 +7,7 @@ const { getMeasurementType } = require("./utils/unitHelper");
 const quantityRoutes = require("./routes/quantityRoutes");
 const arithmeticRoutes = require("./routes/arithmeticRoutes");
 const comparisonRoutes = require("./routes/comparisonRoutes");
+const historyRoutes = require("./routes/historyRoutes");
 
 const app = express();
 
@@ -46,6 +47,8 @@ app.use("/", quantityRoutes);
 app.use("/", arithmeticRoutes);
 
 app.use("/", comparisonRoutes);
+
+app.use("/", historyRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
