@@ -1,18 +1,22 @@
 const express = require("express");
-const db = require("./config/db");
+const cors = require("cors");
+require("dotenv").config();
+
+const testDB = require("./config/testConnection");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
-app.get("/", async (req, res) => {
-    try {
-        const [rows] = await db.query("SELECT 1 + 1 AS result");
-        res.json(rows);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("DB error");
-    }
+testDB();
+
+app.get("/", (req, res) => {
+    res.send("Quantity Measurement API Running");
 });
 
-module.exports = app;
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on ${PORT}`);
+});
