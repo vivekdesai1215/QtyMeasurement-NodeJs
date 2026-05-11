@@ -1,14 +1,28 @@
 const { convertQuantity } = require("../services/conversionService");
+const { saveHistory } = require("../services/historyService");
+const { getMeasurementType } = require("../utils/unitHelper");
 
-const convertUnit = (req, res) => {
+const convertUnit = async (req, res) => {
     try {
         if (!req.body) {
             throw new Error("Request body is missing");
         }
-        const { value, unit } = req.body;
-        const { targetUnit } = req.query;
-
+        let { value, unit } = req.body;
+        let { targetUnit } = req.query;
+        unit = unit.trim().toLowerCase();
+        targetUnit = targetUnit.trim().toLowerCase();   
         const result = convertQuantity(value, unit, targetUnit);
+
+        await saveHistory({
+            operationType: "CONVERT",
+            measurementType: getMeasurementType(unit),
+
+            input1Value: value,
+            input1Unit: unit,
+
+            resultValue: result,
+            resultUnit: targetUnit
+        });
 
         res.json({
             originalValue: value,
