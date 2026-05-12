@@ -3,54 +3,43 @@ const cors = require("cors");
 require("dotenv").config();
 
 const testDB = require("./config/testConnection");
-const { getMeasurementType } = require("./utils/unitHelper");
+
+// routes
 const quantityRoutes = require("./routes/quantityRoutes");
 const arithmeticRoutes = require("./routes/arithmeticRoutes");
 const comparisonRoutes = require("./routes/comparisonRoutes");
 const historyRoutes = require("./routes/historyRoutes");
+const authRoutes = require("./routes/authRoutes");
+
+// middleware
+const authenticate = require("./middlewares/authMiddleware");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// DB connection test
+// DB test
 testDB();
 
-// Home route
 app.get("/", (req, res) => {
     res.send("Quantity Measurement API Running");
 });
 
-// Test unit route
-app.get("/test-unit/:unit", (req, res) => {
-    try {
-        const unit = req.params.unit;
 
-        const type = getMeasurementType(unit);
+// PUBLIC ROUTES
+app.use("/", authRoutes);
 
-        res.json({
-            unit,
-            measurementType: type
-        });
-    } catch (error) {
-        res.status(400).json({
-            error: error.message
-        });
-    }
-});
+
+// PROTECTED ROUTES
+app.use("/", authenticate, quantityRoutes);
+app.use("/", authenticate, arithmeticRoutes);
+app.use("/", authenticate, comparisonRoutes);
+app.use("/", authenticate, historyRoutes);
+
 
 const PORT = process.env.PORT || 5000;
-
-app.use("/", quantityRoutes);
-
-app.use("/", arithmeticRoutes);
-
-app.use("/", comparisonRoutes);
-
-app.use("/", historyRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
 });
-
